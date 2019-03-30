@@ -1,6 +1,6 @@
-<a href="https://github.com/branilson"><img src="https://github.com/branilson/BL_TrafficLight/blob/master/img/180px-Traffic_lights_3_states.png" title="Branilson Luiz" alt="BranlsonLuiz"></a>
+<a href="https://github.com/branilson"><img src="https://github.com/branilson/BL_TrafficLight2/raw/master/img/trafficlight2.png" title="Branilson Luiz" alt="BranlsonLuiz"></a>
 
-<!-- [![Branilson Luiz(https://github.com/branilson/BL_TrafficLight/blob/master/img/180px-Traffic_lights_3_states.png](https://github.com/branilson) -->
+<!-- [![Branilson Luiz(https://github.com/branilson/BL_TrafficLight2/raw/master/img/trafficlight2.png](https://github.com/branilson) -->
 
 
 # Enhanced Traffic Light Mbed code
@@ -11,16 +11,19 @@
 
 > Challenge for students of the discipline Microprocessed Systems II at SENAI CIMATEC university center.
 
-> Keywords: Traffic light, C/C++, PlatformIO, Mbed, STM32F4
+> Keywords: Traffic light, Finite State Machine, C/C++, Mbed, STM32F4
 
 **Finite State Machine policy**
 
 - States: Red; Green; Yellow; Alert (Only Yellow blinking at 1Hz); Off.
 - Initial state: Red
 - Transition Red -> Green: t=10s
-- Transition - Green --> Yellow: t=20s | buttom = 1
+- Transition - Green --> Yellow: t=20s || tBt=<3s
 - Transition - Yellow --> Red: t=4s
-- Transition - Any other state --> Alert: Buttom pressed t > 3s
-- Transition - Any other state --> Off:  Buttom pressed 3s < t < 10s
-- Transition - Off -- > Red:  Buttom pressed t > 10s
-- Transition - Alert --> Previous state:  Buttom pressed 3s < t < 10s
+- Transition - Any other state --> Alert: tBt>=3s && tBt<10s
+- Transition - Any other state --> Off: tBt>10s
+- Transition - Off -- > Red: tBt > 10s
+- Transition - Alert --> Previous state: tBt>=3s && tBt<10s
+- t = elapsed time; tBt =  time Button pressed.
+
+<a href="https://github.com/branilson"><img src="https://github.com/branilson/BL_TrafficLight2/raw/master/img/tl2_fsm.png" title="Branilson Luiz" alt="BranlsonLuiz"></a>
