@@ -3,8 +3,8 @@
 #define RED 1
 #define YELLOW 2
 #define GREEN 3
-#define OFF 0
 #define ON 1
+#define OFF 0
 #define ALERT 15 
 #define START 10
 
@@ -17,111 +17,144 @@ InterruptIn btn(p5);
 Timeout tout;
 Ticker t;
 
-int pState, cState, count, sBtn;
-void colorSwitch(int cl);
-void stateSwitch();
-void attachYellowAlert();
+int p, c, sum, sButton;
 void start();
 void end();
-void changeStateToAlert();
-void changeStateToOff();
+void sinalAlerta();
+void trocarEstado();
+void trocarSinal(int cl);
+void ligarAlerta();
+void desligar();
 void default();
-void increaseCounter();
+void autoInc();
 
-void colorSwitch(int cl) {
-  switch(cl) { 
+void trocarSinal(int cl)
+{
+  switch(cl) 
+  { 
     case RED:
       lRed = 1;
-      pState = cState;
-      cState = RED;
-      tout.attach(&stateSwitch, 10);
+      p = c;
+      c = RED;
+      tout.attach(&trocarEstado, 10);
       
     case YELLOW:
       lYellow = 1;
-      pState = cState;
-      cState = YELLO;
-      tout.attach(&stateSwitch, 4);
+      p = c;
+      c = YELLO;
+      tout.attach(&trocarEstado, 4);
       
     case GREEN:
       lGreen = 1;
-      pState = cState;
-      cState = GREEN;
-      tout.attach(&stateSwitch, 20);
+      p = c;
+      c = GREEN;
+      tout.attach(&trocarEstado, 20);
   }
 }
-void stateSwitch() {
+void trocarEstado() 
+{
   stateToDefault();
 
-  if(cState == START && pState == START) {
+  if(c == START && p == START)
+  {
     lRed = 1;
-    pState = RED;
-    cState = RED;
-    tout.attach(&stateSwitch, 10);
+    p = RED;
+    c = RED;
+    tout.attach(&trocarEstado, 10);
   }
-  else if(sBtn == OFF) colorSwitch(cState);
-  else if(sBtn == ON) {
-      sBtn = OFF;
+  else if(sButton == OFF) trocarSinal(c);
+  else if(sButton == ON) 
+      {
+      sButton = OFF;
 
-      if(cState == RED) {
-        if(count >= 3 && count <= 10) changeStateToAlert();
-        else if(count > 10) changeStateToOff();
-        else colorSwitch(RED);
+      if(c == RED) 
+      {
+        if(sum >= 3 && sum <= 10) ligarAlerta();
+        else if(sum > 10) desligar();
+        else trocarSinal(RED);
       }
-      else if(cState == YELLOW) {
-        if(count>=3 && count<=10) changeStateToAlert();
-        else if(count > 10) changeStateToOff();
-        else colorSwitch(YELLOW);
+      else if(c == YELLOW) 
+      {
+        if(sum>=3 && sum<=10) ligarAlerta();
+        else if(sum > 10) desligar();
+        else trocarSinal(YELLOW);
       }
-      else if(cState == GREEN) {
-        if(count >= 3 && count <= 10) changeStateToAlert();
-        else if(count == 20 || count <= 3) colorSwitch(YELLOW);
-        else if(count > 10) changeStateToOff();
-        else colorSwitch(GREEN);
+      else if(c == GREEN)
+      {
+        if(sum >= 3 && sum <= 10) ligarAlerta();
+        else if(sum == 20 || sum <= 3) trocarSinal(YELLOW);
+        else if(sum > 10) desligar();
+        else trocarSinal(GREEN);
       }
-      else if(cState == ALERT) {
-          if(count >= 3 && count <= 10) {
-            if(pState == RED) colorSwitch(RED);
-            else if(pState == YELLOW) colorSwitch(YELLOW);
-            else colorSwitch(GREEN);
+      else if(c == ALERT)
+      {
+          if(sum >= 3 && sum <= 10)
+          {
+          
+            if(p == RED)
+            {
+            trocarSinal(RED);
+            }
+            
+            else if(p == YELLOW)
+            {
+           trocarSinal(YELLOW);
+            }
+            
+            else
+            { 
+            trocarSinal(GREEN);
+            }
+            
           }
-          else if(count > 10) changeStateToOff();
+          else if(sum > 10)
+          { 
+          desligar();
+          }
           else {
-            cState = pState;
-            changeStateToAlert();
+            c = p;
+           ligarAlerta();
           }
       }
-      else if(cState == OFF){
-          if(count > 10) colorSwitch(RED);
-          else changeStateToOff();
+      else if(c == OFF)
+      {
+          if(sum > 10) trocarSinal(RED);
+          else desligar();
       }
   }
 }
 
-void attachYellowAlert() {
+void sinalAlerta() 
+{
   lYellow = !lYellow;
-  t.attach(attachYellowAlert, 0.5);
+  t.attach(sinalAlerta, 0.5);
 }
-void start() {
-  tout.detach();
-  count = 0;
-  t.attach(increaseCounter, 1);
+void start()
+{
+ tout.detach();
+ sum = 0;
+  t.attach(autoInc, 1);
 }
-void end() {
+void end()
+{
   t.detach();
-  sBtn = ON;
-  stateSwitch();
+  sButton = ON;
+  trocarEstado();
 }
-void changeStateToAlert() {
-  pState = cState;
-  cState = ALERT;
-  attachYellowAlert();
+void ligarAlerta() 
+{
+  p = c;
+  c = ALERT;
+  sinalAlerta();
 }
-void changeStateToOff() {
-  pState = cState;
-  cState = OFF;
+void desligar()
+{
+  p = c;
+  c = OFF;
   Default();
 }
-void default() {
+void default() 
+{
   lRed = OFF;
   lYellow = OFF;
   lGreen = OFF;
@@ -129,15 +162,16 @@ void default() {
   t.detach();
 }
 
-void increaseCounter() {
-  count++;
+void autoInc() 
+{
+  sum++;
 }
 
-int main() {
-
-  cState = START;
-  pState = START;
-  stateSwitch();
+int main() 
+{
+  c = START;
+  p = START;
+  trocarEstado();
   btn.rise(&start);
   btn.fall(&end);
   while(1) {
